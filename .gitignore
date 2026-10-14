@@ -1,0 +1,16 @@
+# Maven output
+/target/
+*.class
+# NetBeans local settings
+/nbproject/private/
+/nbactions-private.xml
+# Local secrets
+.env
+.env.*
+!.env.example
+/secrets/
+*.jks
+*.keystore
+*.p12
+*.pfx
+*.key
