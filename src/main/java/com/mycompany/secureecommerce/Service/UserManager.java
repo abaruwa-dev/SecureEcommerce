@@ -56,6 +56,7 @@ public class UserManager {
         }
         
         public User getCurrentUser(){
+            
             return currentUser;
         }
 

@@ -10,4 +10,12 @@
         <maven.compiler.release>21</maven.compiler.release>
         <exec.mainClass>com.mycompany.secureecommerce.ShopClient</exec.mainClass>
     </properties>
+    
+    <dependencies>
+    <dependency>
+        <groupId>at.favre.lib</groupId>
+        <artifactId>bcrypt</artifactId>
+        <version>0.10.2</version>
+    </dependency>
+    </dependencies>
 </project>
