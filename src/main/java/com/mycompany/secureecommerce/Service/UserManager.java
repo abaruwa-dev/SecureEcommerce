@@ -14,6 +14,7 @@ public class UserManager {
     
     private ArrayList<User> userList = new ArrayList<User>();
     private User currentUser;
+    SecurePayments SecurePayments;
     
     
     
@@ -65,6 +66,15 @@ public class UserManager {
         public User SearchUserByName(String name) {
           for (User u : userList) {
              if (name.equals(u.getName())) {
+                return u;
+                }
+          }
+             return null;
+         }
+        
+        public User SearchUserByID(String id) {
+          for (User u : userList) {
+             if (id.equals(u.getUserId())) {
                 return u;
                 }
           }

@@ -44,6 +44,7 @@ public class SecurePayments {
       public boolean verifyToken(String token, String storedTokenHash){
                         return verifyPassword(token, storedTokenHash);
       }
+      
      
          //   public String encrypt(String message){}
             

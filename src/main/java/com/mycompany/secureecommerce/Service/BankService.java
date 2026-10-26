@@ -3,11 +3,109 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package com.mycompany.secureecommerce.Service;
+import com.mycompany.secureecommerce.ShopModel.BankAccount;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  *
  * @author Alexb
  */
 public class BankService {
+    
+    private ArrayList<BankAccount> accounts = new ArrayList<BankAccount>();
+    
+    
+    // hash map which stores response and transaction ID 
+    private Map<String, String> processedTransaction = new HashMap<>();
+    
+    
+    
+    private SecurePayments securePayments;
+    
+
+        public BankService(SecurePayments securePayments) {
+         this.securePayments = securePayments;
+
+            // One fictional account for testing.
+             String tokenHash = securePayments.hashPassword("DemoToken1");
+
+                accounts.add(new BankAccount("ACC001", "USER001",tokenHash,100.00));
+                }
+    
+    
+    
+    public BankAccount FindAccountByNumber(String accountNumber) {
+          for (BankAccount b : accounts) {
+             if (accountNumber.equals(b.getAccountNumber())) {
+                return b;
+                }
+          }
+             return null;
+         }
+    
+    
+    public synchronized String ProcessPayment(String envelope){
+        
+        String request = securePayments.decrypt(envelope);
+        
+        // store the request details split in fields 
+        String[] fields = request.split(";", -1 );
+        
+        if(fields.length != 6){
+            
+            String response =  "Invalid payment request";
+                return securePayments.encrypt(response);
+        }
+            
+        
+        // store payment details once decrypted 
+            String transactionId = fields[0].trim();
+            String userId = fields[1].trim();
+            String productId = fields[2].trim();
+            String accountNumber = fields[3].trim();
+            String paymentToken = fields[4];
+            double amount = Double.parseDouble(fields[5].trim());
+        
+        
+        BankAccount b = FindAccountByNumber(accountNumber);
+        
+        
+        
+        // if the user is found and payment token they entered and account payment token match 
+        if(b != null && b.getOwnerUserId().equals(userId) ){
+            if(securePayments.verifyToken(paymentToken, b.getPaymentTokenHash())){
+                
+                // checks for duplicate transactionId
+            if(processedTransaction.containsKey(transactionId)){
+                 return securePayments.encrypt(processedTransaction.get(transactionId));
+                }
+                
+            if( b.debit(amount)){
+                
+                  // store trasnaction outcome
+            String response = transactionId + ";" + amount + ";APPROVED;Payment successful"; 
+            
+            processedTransaction.put(transactionId, response);
+            
+            // returns encrypted string 
+            return securePayments.encrypt(response);
+                       
+            
+        } else {
+                
+                String response =  transactionId + ";" + amount + ";DECLINED;Insufficient funds";
+                processedTransaction.put(transactionId, response);
+                return securePayments.encrypt(response);
+                
+            }
+          }
+        }
+        
+        String response =  transactionId + ";" + amount + ";DECLINED;Invalid payment credentials";
+        return securePayments.encrypt(response);
+        
+    }
     
 }
