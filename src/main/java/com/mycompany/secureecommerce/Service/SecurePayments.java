@@ -5,6 +5,14 @@
 package com.mycompany.secureecommerce.Service;
 import at.favre.lib.crypto.bcrypt.BCrypt;
 import javax.crypto.SecretKey;
+import java.security.SecureRandom;
+import javax.crypto.Cipher;
+import javax.crypto.spec.GCMParameterSpec;
+import java.nio.charset.StandardCharsets;
+import java.security.GeneralSecurityException;
+import java.util.Base64;
+
+
 
 /**
  *
@@ -21,7 +29,7 @@ public class SecurePayments {
     
     
     
-    public String hashPassword(String password){
+    public static String hashPassword(String password){
       // Generate a salt and return the complete encoded bcrypt hash.
         return BCrypt.withDefaults()
             .hashToString(12, password.toCharArray());
@@ -41,16 +49,70 @@ public class SecurePayments {
             
      
      
-      public boolean verifyToken(String token, String storedTokenHash){
+      public static boolean verifyToken(String token, String storedTokenHash){
                         return verifyPassword(token, storedTokenHash);
       }
       
      
-         //   public String encrypt(String message){}
+         public String encrypt(String message){
+         
+             try{
+                    
+                 byte[] randomByte = generateNonce();
+
+                    // choose new cipher AES/GCM
+                    Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
+                    
+                    // encryption settings with tag to prevent tampering 
+                    // note Decrypt() needs the same AES key and the nonce used for encrypt()
+                    cipher.init(Cipher.ENCRYPT_MODE,aesKey, new GCMParameterSpec(128, randomByte));
+                    
+                    
+                    // encrypts message to bytes
+                    byte[] encrypted = cipher.doFinal(message.getBytes(StandardCharsets.UTF_8));
+                    
+                      // Package the nonce and encrypted data for sending.
+                     String nonceText = Base64.getEncoder().encodeToString(randomByte);
+                     String encryptedText = Base64.getEncoder().encodeToString(encrypted);
+
+                             return nonceText + ":" + encryptedText;
+                 
+             }catch(GeneralSecurityException e){
+                  throw new IllegalStateException("Encryption failed.", e);
+                 
+             }
+             
+         
+         }
             
-         //   public String decrypt(String message){}
+        public String decrypt(String message){
+        
+            try{
+                    
+                 String[] parts = message.split(":", -1);
+
+                 
+                 
+                 // create decryption 
+                 
+                 
+             }catch(GeneralSecurityException e){
+                  throw new IllegalStateException("Decryption failed.", e);
+                 
+             }
+        }
     
      
-      //   public byte[] generateNonce(){ }
+      
+      // generate random 12 bytes 
+     public byte[] generateNonce(){ 
+         
+        byte[] nonce = new byte[12];
+
+        SecureRandom random = new SecureRandom();
+        random.nextBytes(nonce);
+
+            return nonce;
+     }
     
 }

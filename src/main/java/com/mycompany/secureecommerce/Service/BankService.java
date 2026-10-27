@@ -30,7 +30,6 @@ public class BankService {
 
             // One fictional account for testing.
              String tokenHash = securePayments.hashPassword("DemoToken1");
-
                 accounts.add(new BankAccount("ACC001", "USER001",tokenHash,100.00));
                 }
     

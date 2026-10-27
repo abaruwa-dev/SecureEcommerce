@@ -4,6 +4,9 @@
 
 package com.mycompany.secureecommerce;
 
+import com.mycompany.secureecommerce.Service.UserManager;
+import com.mycompany.secureecommerce.ShopUI.LoginUI;
+
 /**
  *
  * @author Alexb
@@ -11,6 +14,11 @@ package com.mycompany.secureecommerce;
 public class ShopClient {
 
     public static void main(String[] args) {
-        System.out.println("Hello World!");
+    UserManager userManager = new UserManager();
+
+     {
+        LoginUI loginUI = new LoginUI(userManager);
+        loginUI.setVisible(true);
     }
+}
 }
