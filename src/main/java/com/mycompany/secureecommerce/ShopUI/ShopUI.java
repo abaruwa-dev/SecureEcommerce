@@ -4,6 +4,13 @@
  */
 package com.mycompany.secureecommerce.ShopUI;
 
+import com.mycompany.secureecommerce.PaymentClient;
+import com.mycompany.secureecommerce.Service.SecurePayments;
+import com.mycompany.secureecommerce.Service.UserManager;
+import com.mycompany.secureecommerce.ShopModel.Transaction;
+import com.mycompany.secureecommerce.ShopModel.Product;
+import java.util.ArrayList;
+
 /**
  *
  * @author Alexb
@@ -11,14 +18,31 @@ package com.mycompany.secureecommerce.ShopUI;
 public class ShopUI extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(ShopUI.class.getName());
-
+    private UserManager UserManager;
+     private int currentIndex = 0;
     /**
      * Creates new form ShopUI
      */
-    public ShopUI() {
+    public ShopUI(UserManager UserManager) {
         initComponents();
+        
+        products.add(new Product("P001", "Plain T-Shirt", 7.99));
+        products.add(new Product("P002", "Crew Socks (3 Pack)", 4.99));
+        products.add(new Product("P003", "Basic Hoodie", 16.99));
+        products.add(new Product("P004", "Joggers", 12.99));
+        products.add(new Product("P005", "Baseball Cap", 5.99));
+        products.add(new Product("P006", "Denim Shorts", 11.99));
+        products.add(new Product("P007", "Long-Sleeve T-Shirt", 9.99));
+        products.add(new Product("P008", "Knit Beanie", 4.49));
+        products.add(new Product("P009", "Fleece Sweatshirt", 14.99));
+        products.add(new Product("P010", "Basic Leggings", 8.99));
+        
+       
+        this.UserManager = UserManager;
+        productDisplay.setText(products.get(currentIndex).getProductDetails());
     }
-
+        
+    private final ArrayList<Product> products = new ArrayList<>();
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -29,7 +53,7 @@ public class ShopUI extends javax.swing.JFrame {
     private void initComponents() {
 
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
+        productDisplay = new javax.swing.JTextArea();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
@@ -37,18 +61,21 @@ public class ShopUI extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jTextArea1.setColumns(20);
-        jTextArea1.setRows(5);
-        jScrollPane1.setViewportView(jTextArea1);
+        productDisplay.setColumns(20);
+        productDisplay.setRows(5);
+        jScrollPane1.setViewportView(productDisplay);
 
         jButton1.setText("BACK PRODUCT");
+        jButton1.addActionListener(this::jButton1ActionPerformed);
 
         jButton2.setText("NEXT PRODUCT");
         jButton2.addActionListener(this::jButton2ActionPerformed);
 
         jButton3.setText("BUY PRODUCT");
+        jButton3.addActionListener(this::jButton3ActionPerformed);
 
         jButton4.setText("SIGN OUT");
+        jButton4.addActionListener(this::jButton4ActionPerformed);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -98,8 +125,54 @@ public class ShopUI extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        // TODO add your handling code here:
+       
+       
+       if (currentIndex < products.size() - 1) {
+             currentIndex++;
+             productDisplay.setText(products.get(currentIndex).getProductDetails());
+        }
     }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+      
+        
+        if (currentIndex > 0) {
+                 currentIndex--;
+                 productDisplay.setText(products.get(currentIndex).getProductDetails());
+        }
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+            
+            // get current product from user
+            Product product = products.get(currentIndex);
+            
+            // create new transaction with product and user logged in
+            Transaction transaction = new Transaction(UserManager.getCurrentUser().getUserId(),product.getProductId(),product.getPrice());
+            
+            try{
+                
+                
+                // create SecurePayments with shared key for client / server can both use 
+                SecurePayments securePayments =new SecurePayments(SecurePayments.loadSharedKey());
+                
+                // new payment client 
+                PaymentClient paymentClient = new PaymentClient("localhost", 5000, securePayments);
+                
+                // pass details to paymentsUI
+                 new PaymentsUI(product, transaction, paymentClient, this).setVisible(true);
+                     setVisible(false);      
+                
+            } catch (Exception e) {
+                 javax.swing.JOptionPane.showMessageDialog(this, "Could not open checkout.");
+            }
+    }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        UserManager.logout();
+        new LoginUI(UserManager).setVisible(true);
+        dispose();
+    }//GEN-LAST:event_jButton4ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -123,8 +196,15 @@ public class ShopUI extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(() -> new ShopUI().setVisible(true));
+        java.awt.EventQueue.invokeLater(() -> new ShopUI(new UserManager()).setVisible(true));
+        
+        
+        
     }
+    
+    
+            
+        
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
@@ -132,6 +212,6 @@ public class ShopUI extends javax.swing.JFrame {
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextArea jTextArea1;
+    private javax.swing.JTextArea productDisplay;
     // End of variables declaration//GEN-END:variables
 }
