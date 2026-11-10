@@ -48,14 +48,16 @@ public class PaymentsUI extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
+        priceLabel = new javax.swing.JLabel();
+        productNameLabel = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
+        accountNumberField = new javax.swing.JTextField();
         jLabel7 = new javax.swing.JLabel();
-        jPasswordField1 = new javax.swing.JPasswordField();
-        jButton1 = new javax.swing.JButton();
+        paymentTokenField = new javax.swing.JPasswordField();
+        PayNow = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTextArea1 = new javax.swing.JTextArea();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -65,22 +67,28 @@ public class PaymentsUI extends javax.swing.JFrame {
 
         jLabel3.setText("jLabel3");
 
-        jLabel4.setText("Total");
+        priceLabel.setText("Total");
 
-        jLabel5.setText("jLabel5");
+        productNameLabel.setText("jLabel5");
 
         jLabel6.setText("Account Number");
 
-        jTextField1.addActionListener(this::jTextField1ActionPerformed);
+        accountNumberField.addActionListener(this::accountNumberFieldActionPerformed);
 
         jLabel7.setText("Payment Token");
 
-        jPasswordField1.setText("jPasswordField1");
-        jPasswordField1.addActionListener(this::jPasswordField1ActionPerformed);
+        paymentTokenField.setText("jPasswordField1");
+        paymentTokenField.addActionListener(this::paymentTokenFieldActionPerformed);
 
-        jButton1.setText("PAY NOW");
+        PayNow.setText("PAY NOW");
+        PayNow.addActionListener(this::PayNowActionPerformed);
 
         jButton2.setText("BACK TO SHOP");
+        jButton2.addActionListener(this::jButton2ActionPerformed);
+
+        jTextArea1.setColumns(20);
+        jTextArea1.setRows(5);
+        jScrollPane1.setViewportView(jTextArea1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -90,30 +98,22 @@ public class PaymentsUI extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(169, 169, 169)
-                        .addComponent(jPasswordField1, javax.swing.GroupLayout.PREFERRED_SIZE, 182, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(paymentTokenField, javax.swing.GroupLayout.PREFERRED_SIZE, 182, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(47, 47, 47)
                         .addComponent(jLabel2)
                         .addGap(42, 42, 42)
-                        .addComponent(jLabel5)
+                        .addComponent(productNameLabel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 167, Short.MAX_VALUE)
-                        .addComponent(jLabel4)))
+                        .addComponent(priceLabel)))
                 .addGap(61, 61, 61)
                 .addComponent(jLabel3)
                 .addGap(68, 68, 68))
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(214, 214, 214)
-                        .addComponent(jLabel7)
-                        .addGap(34, 34, 34)))
-                .addGap(0, 0, Short.MAX_VALUE))
-            .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(212, 212, 212)
-                        .addComponent(jButton1))
+                        .addComponent(PayNow))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(198, 198, 198)
                         .addComponent(jButton2))
@@ -123,6 +123,19 @@ public class PaymentsUI extends javax.swing.JFrame {
                             .addComponent(jLabel1)
                             .addComponent(jLabel6))))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(185, 185, 185)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(accountNumberField, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel7)
+                                .addGap(34, 34, 34))))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(140, 140, 140)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -132,34 +145,77 @@ public class PaymentsUI extends javax.swing.JFrame {
                 .addGap(29, 29, 29)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(jLabel5)
-                    .addComponent(jLabel4)
+                    .addComponent(productNameLabel)
+                    .addComponent(priceLabel)
                     .addComponent(jLabel3))
                 .addGap(42, 42, 42)
                 .addComponent(jLabel6)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(accountNumberField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(24, 24, 24)
                 .addComponent(jLabel7)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPasswordField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(paymentTokenField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButton1)
+                .addComponent(PayNow)
                 .addGap(18, 18, 18)
                 .addComponent(jButton2)
-                .addContainerGap(17, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(25, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField1ActionPerformed
+    private void accountNumberFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_accountNumberFieldActionPerformed
+            // TODO add your handling code here:
+    }//GEN-LAST:event_accountNumberFieldActionPerformed
 
-    private void jPasswordField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jPasswordField1ActionPerformed
+    private void paymentTokenFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_paymentTokenFieldActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jPasswordField1ActionPerformed
+    }//GEN-LAST:event_paymentTokenFieldActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        shopUI.setVisible(true);
+        dispose();
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void PayNowActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PayNowActionPerformed
+     
+     String accountNumber = accountNumberField.getText();
+     String paymentToken = new String(paymentTokenField.getPassword());
+     String[] fields;
+     
+     if(!accountNumber.isEmpty() && !paymentToken.isEmpty()){
+         
+         // disable pay button when processing
+         PayNow.setEnabled(false);
+         
+         try{
+         String response = paymentClient.sendPayment(transaction, accountNumber, paymentToken);
+         
+         
+         
+         
+         fields = response.split(";", -1 );
+         transaction.updateStatus(fields[2]);
+         
+
+             JOptionPane.showMessageDialog(this,"STATUS : " + fields[2] +"\n AMOUNT : "+fields[1] + "\n DETAILS : " +fields[3]);
+             paymentTokenField.setText("");
+             
+         }catch(RuntimeException e){
+             
+             JOptionPane.showMessageDialog(this,"Could not con firm the payhment result, Retry ");
+             PayNow.setEnabled(true);
+         }
+            
+     }
+     
+       
+      
+    }//GEN-LAST:event_PayNowActionPerformed
 
     /**
      * @param args the command line arguments
@@ -183,20 +239,22 @@ public class PaymentsUI extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(() -> new PaymentsUI().setVisible(true));
+       // java.awt.EventQueue.invokeLater(() -> new PaymentsUI().setVisible(true));
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton PayNow;
+    private javax.swing.JTextField accountNumberField;
     private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
-    private javax.swing.JPasswordField jPasswordField1;
-    private javax.swing.JTextField jTextField1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTextArea jTextArea1;
+    private javax.swing.JPasswordField paymentTokenField;
+    private javax.swing.JLabel priceLabel;
+    private javax.swing.JLabel productNameLabel;
     // End of variables declaration//GEN-END:variables
 }
